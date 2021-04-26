@@ -65,6 +65,15 @@ class DataSequence():
         self.cid = self.get_unique_cid(customer)
         self.unique_words_ids = self.get_unique_words_ids(text)
 
+    def __lt__(self, other):
+        return self.cid < other.cid
+
+    def __gt__(self, other):
+        return self.cid > other.cid
+
+    def __eq__(self, other):
+        return self.cid == other.cid
+
     @staticmethod
     def unique_words(text):
         """
