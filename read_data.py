@@ -4,55 +4,6 @@ from config import Config
 
 TEST = Config.TEST
 
-# def get_unique_words(text):
-#     """
-#     Zwraca posortowany zbiór unikalnych wyrazów w tekscie.
-#     """
-#     unique_words = set()
-#     # Wyrazy napisane małymi literami.
-#     words = text.lower().split()
-#     for word in words:
-#         # Usuniecie znakow interpukcyjnych
-#         word = word.strip('.,!;()[]')
-#         unique_words.add(word)
-#     return sorted(unique_words)
-
-# def get_sequence_id(review):
-#     """
-#     Zwraca listę zbiorów unikalnych wyrazów
-#     dla recenzji.
-#     """
-#     sentences = review.lower().split('.')
-#     print(sentences)
-#     for sentence in sentences:
-#       unique_words =  get_unique_words(sentence)
-      
-#       print(unique_words)
-#       print("?????????")
-#       print(len(unique_words))
-# # def set_ids(words):
-# #     return zip(words, range(len(words)))
-
-    
-# # Wczytanie danych z pliku testowego
-raw_data = pd.read_csv('data/test_data.csv')
-
-# # Pozyskanie jedynie danych o kraju i recenzji.
-
-# # Utworzenie zbioru unikalnych wyrazów.
-# unique_words = set()
-# reviews = list(df['description'])
-# for review in reviews:
-#     tmp_unique_words = get_unique_words(review)
-#     print(tmp_unique_words)
-#     print("#####################")
-#     unique_words.update(tmp_unique_words)
-# unique_words = sorted(unique_words)
-
-# IDS_WORDS = dict(zip(unique_words, range(len(unique_words))))
-# print(IDS_WORDS)
-# get_sequence_id(reviews[0])
-
 
 class DataSequence():
 
@@ -144,6 +95,7 @@ class DataSequence():
 
 
 sequences = DataSequence.data_sequence_factory()
+sequences = sorted(sequences)
 a = DataSequence.get_words()
 b = DataSequence.get_customers()
 print(a)
