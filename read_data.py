@@ -93,16 +93,28 @@ class DataSequence():
             sequences.append(s)
         return sequences
 
+## Only for test generete simple sequences
+import random
+def generate_simple_sequeneces():
+    sequences = []
+    # Liczba utoworzonych sekwencji
+    max_sequences = 10
+    # Zbiór elementów jakie mogą wystąpić
+    group_of_texts = ['a', 'b', 'c', 'd', 'e', 'f']
+    # Kraje jakie mogą wystąpić
+    group_of_customers = ["Poland", "USA", "France", "Germany"]
 
-sequences = DataSequence.data_sequence_factory()
-sequences = sorted(sequences)
-a = DataSequence.get_words()
-b = DataSequence.get_customers()
-print(a)
-print(b)
-
-for s in sequences:
-    ids = s.unique_words_ids
-    print(ids)
-    c = s.cid
-    print(c)
+    for i in range(max_sequences):
+        customer =  random.choice(group_of_customers)
+        # losuje jak długa będzie sekwencja
+        leters_to_select = random.randint(1, len(group_of_texts))
+        # losuje odpowiednia liczbę liter
+        text_list = random.sample(group_of_texts, leters_to_select)
+        # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
+        text = ' '.join(text_list)
+        s = DataSequence(customer=customer, text=text)
+        print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
+        sequences.append(s)
+    print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    return sorted(sequences)
