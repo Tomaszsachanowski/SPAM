@@ -45,3 +45,12 @@ def generate_words_bitmaps(sequences):
 
 bitmaps_for_words_ids = generate_words_bitmaps(sequences)
 print(bitmaps_for_words_ids)
+
+class seq_bitmap():
+
+    def __init__(self, seq, bitmap):
+        self.seq = seq
+        self.bitmap = bitmap
+
+    def get_bitmap(self):
+        return self.bitmap
