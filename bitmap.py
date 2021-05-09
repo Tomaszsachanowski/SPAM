@@ -35,11 +35,12 @@ def generate_words_bitmaps(sequences):
     all_bitmap = np.array(all_vectors)
     print(all_bitmap)
 
-    bit_vectors_for_word_ids = dict()
+    bit_vectors_for_word_ids = []
     for column in range(lenght_of_unique_word):
         column_vector = all_bitmap[:,column]
         column_vector_splited = np.split(column_vector, len(cids))
-        bit_vectors_for_word_ids[column] = column_vector_splited
+        # bit_vectors_for_word_ids[[column]] = column_vector_splited
+        bit_vectors_for_word_ids.append(([column], column_vector_splited))
 
     return bit_vectors_for_word_ids
 
