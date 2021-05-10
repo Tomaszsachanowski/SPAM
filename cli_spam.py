@@ -5,7 +5,7 @@ import click
 
 from read_data import DataSequence
 from bitmap import generate_words_bitmaps
-from spam import SPAM
+from spam import SPAM, translate_patterns
 
 
 @click.group()
@@ -28,8 +28,11 @@ def start(minsup, data_path):
     customers='customers', texts='texts', path=data_path)
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
     spam_alg = SPAM(minsup, bitmaps_for_words_ids)
-    spam_alg.spam()
+    frequent_patterns = spam_alg.spam()
 
+    with open("frequent_patterns", 'w') as file: 
+        for pattern in translate_patterns(frequent_patterns):
+            file.write(str(pattern) + '\n')
 
 # Przykład użycia python cli_spam start 2 /data/test_simple.csv
 if __name__ == "__main__":
