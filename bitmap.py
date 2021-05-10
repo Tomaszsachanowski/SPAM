@@ -48,8 +48,7 @@ def generate_words_bitmaps(sequences):
 bitmaps_for_words_ids = generate_words_bitmaps(sequences)
 print(bitmaps_for_words_ids)
 
-print('111111111111111')
-spam_alg = spam.SPAM(0.1, bitmaps_for_words_ids)
+spam_alg = spam.SPAM(2, bitmaps_for_words_ids)
 spam_alg.spam()
 
 class seq_bitmap():

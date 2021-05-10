@@ -1,5 +1,6 @@
 import itertools
 import numpy as np
+import copy
 
 class SPAM():
 
@@ -7,7 +8,7 @@ class SPAM():
     frequent_patterns = []
 
     def __init__(self, min_sup, seq_bitmaps):
-        self.min_sup = min_sup * len(seq_bitmaps)
+        self.min_sup = min_sup
         self.seq_bitmaps = seq_bitmaps
         print(self.min_sup)
 
@@ -33,22 +34,21 @@ class SPAM():
         for i in s_n:
             new_node_bitmap = self.check_if_frequent_s(node, i)
             if new_node_bitmap is not None:
-                new_sequence = node[0] + [[i]]
+                new_sequence = node[0] + [i]
                 new_frequent_patterns_s.append((new_sequence, new_node_bitmap))
                 s_temp.append(i)
         
         for new_node in new_frequent_patterns_s:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x > i, s_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], s_temp)))
 
         for i in i_n:
             new_node_bitmap = self.check_if_frequent_i(node, i)
             if new_node_bitmap is not None:
-                new_sequence = self.i_extend(node[0], i)
+                new_sequence = self.i_extend(node[0], i[0])
                 new_frequent_patterns_i.append((new_sequence, new_node_bitmap))
-                i_temp.append(i)
 
         for new_node in new_frequent_patterns_i:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x > i, i_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], i_temp)))
 
         self.frequent_patterns = self.frequent_patterns + new_frequent_patterns_s + new_frequent_patterns_i
 
@@ -90,7 +90,7 @@ class SPAM():
 
 
     def i_extend(self, sequence, i):
-        new_sequence = sequence.copy()
+        new_sequence = copy.deepcopy(sequence)
         new_sequence[-1].append(i)
         return new_sequence
 
@@ -131,4 +131,15 @@ class SPAM():
     def spam(self):
         self.filter_unfrequent_sequences()
         for seq_b in self.seq_bitmaps:
-            self.dfs_pruning(seq_b, self.frequent_items, list(filter(lambda x: x > seq_b[0][0], self.frequent_items)))
+            i_n = []
+            for item in self.frequent_items:
+                if item[0] > seq_b[0][0][0]:
+                    i_n += [item]
+            self.dfs_pruning(seq_b, self.frequent_items, i_n)
+
+        print(self.frequent_patterns)
+        
+        with open("frequent_patterns", 'w') as file: 
+            for pattern in self.frequent_patterns:
+                file.write(str(pattern[0]) + '\n')
+            
