@@ -21,8 +21,8 @@ def generate_words_bitmaps(sequences):
     for cid in cids:
         bit_vector = np.zeros(lenght_of_unique_word, dtype=int)
         bit_vectors = [bit_vector]*(k - counts[cid])
-        all_vectors.extend(bit_vectors)
         all_vectors.extend(bit_vectors_for_cid[cid])
+        all_vectors.extend(bit_vectors)
 
     all_bitmap = np.array(all_vectors)
     print(all_bitmap)
