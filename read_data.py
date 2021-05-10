@@ -91,10 +91,11 @@ class DataSequence():
             text = row[texts]
             s = cls(customer, text)
             sequences.append(s)
-        return sequences
+        return sorted(sequences)
 
 ## Only for test generete simple sequences
 import random
+
 def generate_simple_sequeneces():
     sequences = []
     # Liczba utoworzonych sekwencji
@@ -103,7 +104,6 @@ def generate_simple_sequeneces():
     group_of_texts = ['a', 'b', 'c', 'd', 'e', 'f']
     # Kraje jakie mogą wystąpić
     group_of_customers = ["Poland", "USA", "France", "Germany"]
-
     for i in range(max_sequences):
         customer =  random.choice(group_of_customers)
         # losuje jak długa będzie sekwencja
@@ -118,4 +118,3 @@ def generate_simple_sequeneces():
     print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
-
