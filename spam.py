@@ -2,6 +2,9 @@ import itertools
 import numpy as np
 import copy
 
+from read_data import DataSequence
+
+
 class SPAM():
 
     frequent_items = []
@@ -146,14 +149,14 @@ from read_data import generate_simple_sequeneces
 from bitmap import generate_words_bitmaps
 
 
-def translate_patterns(patterns):
+def translate_patterns(frequent_patterns):
     translated_patterns = []
     for pattern in frequent_patterns:
         translated_sequence = []
         for itemset in pattern[0]:
             translated_itemset = []
             for item in itemset:
-                translated_itemset.append(sequences[0].get_words(item))
+                translated_itemset.append(DataSequence.get_words(item))
             translated_sequence.append(translated_itemset)
         translated_patterns.append(translated_sequence)
     return translated_patterns
