@@ -1,14 +1,5 @@
 import numpy as np
 from math import ceil
-import spam
-
-from read_data import generate_simple_sequeneces
-
-
-
-
-sequences = generate_simple_sequeneces()
-
 
 
 def generate_words_bitmaps(sequences):
@@ -45,11 +36,6 @@ def generate_words_bitmaps(sequences):
 
     return bit_vectors_for_word_ids
 
-bitmaps_for_words_ids = generate_words_bitmaps(sequences)
-print(bitmaps_for_words_ids)
-
-spam_alg = spam.SPAM(2, bitmaps_for_words_ids)
-spam_alg.spam()
 
 class seq_bitmap():
 

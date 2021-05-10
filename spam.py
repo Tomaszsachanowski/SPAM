@@ -142,4 +142,15 @@ class SPAM():
         with open("frequent_patterns", 'w') as file: 
             for pattern in self.frequent_patterns:
                 file.write(str(pattern[0]) + '\n')
-            
+
+# For test
+from read_data import generate_simple_sequeneces
+from bitmap import generate_words_bitmaps
+
+if __name__ == "__main__":
+    sequences = generate_simple_sequeneces()
+    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    print(bitmaps_for_words_ids)
+
+    spam_alg = SPAM(2, bitmaps_for_words_ids)
+    spam_alg.spam()
