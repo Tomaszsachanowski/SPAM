@@ -118,3 +118,4 @@ def generate_simple_sequeneces():
     print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
+
