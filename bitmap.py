@@ -36,12 +36,3 @@ def generate_words_bitmaps(sequences):
 
     return bit_vectors_for_word_ids
 
-
-class seq_bitmap():
-
-    def __init__(self, seq, bitmap):
-        self.seq = seq
-        self.bitmap = bitmap
-
-    def get_bitmap(self):
-        return self.bitmap

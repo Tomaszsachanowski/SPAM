@@ -11,9 +11,13 @@ class SPAM():
     frequent_patterns = []
 
     def __init__(self, min_sup, seq_bitmaps):
-        self.min_sup = min_sup
+        """
+        @param min_sup: minimalne wsparcie czestego wzorca
+        @param seq_bitmaps: baza danych w postaci map bitowych, lista krotek - ([id przedmiotu], [[partycja1], [partycja2], ...])
+        """
+
+        self.min_sup = min_sup * len(seq_bitmaps[0][1])
         self.seq_bitmaps = seq_bitmaps
-        print(self.min_sup)
 
 
     def dfs_pruning(self, node, s_n, i_n):
@@ -58,12 +62,23 @@ class SPAM():
 
 
     def check_if_frequent_s(self, node, i):
+        """
+        Sprawdza, czy po dodaniu do sekwencji nowego zbioru [i] bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+
+        @param node: krotka (sekwencja, mapa bitowa sekwencji)
+        @param i: nowy zbior (jednoelementowa lista)
+        """
         node_bitmap = self.bitmap_transform(node[1])
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
 
 
     def bitmap_transform(self, bitmap):
+        """
+        Przeksztalca bitmape dla kroku S
+
+        @param bitmap: lista bitow
+        """
         transformed_bitmap = []
         for partition in bitmap:
             start_setting_bits = False
@@ -80,12 +95,24 @@ class SPAM():
 
 
     def check_if_frequent_i(self, node, i):
+        """
+        Sprawdza, czy po dodaniu do ostatniego zbioru sekwencji nowego elementu "i" bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+
+        @param node: krotka (sekwencja, mapa bitowa sekwencji)
+        @param i: nowy element
+        """
         node_bitmap = self.get_bitmap(node[0])
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
 
 
     def check_if_frequent(self, bitmap_a, bitmap_b):
+        """
+        Przeprowadza na bitmapach operacje AND i zwraca nowa bitmape, jesli reprezentuje czesta sekwencje
+
+        @param bitmap_a: bitmapa
+        @param bitmap_b: bitmapa
+        """
         new_node_bitmap = self.and_partitions(bitmap_a, bitmap_b)
         if (self.count_support(new_node_bitmap) >= self.min_sup):
             return new_node_bitmap
@@ -93,27 +120,46 @@ class SPAM():
 
 
     def i_extend(self, sequence, i):
+        """
+        Dodaje element do sekwencji wedlug kroku I (do ostatniego zbioru)
+
+        @param sequence: sekwecja
+        @param i: element
+        """
         new_sequence = copy.deepcopy(sequence)
         new_sequence[-1].append(i)
         return new_sequence
 
 
-    def add_bitmap(self, node, bitmap):
-        self.seq_bitmaps.append((node, bitmap))
-
     def get_bitmap(self, sequence):
+        """
+        Zwraca bitmape danej sekwencji, jesli zostala wczesniej utoworzona
+
+        @param sequence: sekwecja
+        """
         for seq_b in self.seq_bitmaps:
             if seq_b[0] == sequence:
                 return seq_b[1]
         raise ValueError('nieznana sekwencja')
 
     def and_partitions(self, bitmap_a, bitmap_b):
+        """
+        Operacja AND na bitmapach zlozonych z partycji
+
+        @param bitmap_a: bitmapa
+        @param bitmap_b: bitmapa
+        """
         bitmap_ab = []
         for (partition_a, partition_b) in zip(bitmap_a, bitmap_b):
             bitmap_ab.append(np.bitwise_and(partition_a, partition_b))
         return bitmap_ab
     
     def count_support(self, sequence_bitmap):
+        """
+        Zlicza wsparcie (bezwzgledne)
+
+        @param sequence_bitmap: krotka (sekwencja, mapa bitowa sekwencji)
+        """
         support = 0
         for partition in sequence_bitmap:
             if 1 in partition:
@@ -122,6 +168,9 @@ class SPAM():
 
 
     def filter_unfrequent_sequences(self):
+        """
+        Usuwa z bazy wzorce, ktore nie sa czeste (przeznaczona do przefiltrowania jednoelementowych wzorcow podanych przy inicjalizacji)
+        """
         new_seq_bitmaps = []
         for seq_b in self.seq_bitmaps:
             if self.count_support(seq_b[1]) >= self.min_sup:
@@ -132,11 +181,14 @@ class SPAM():
 
 
     def spam(self):
+        """
+        Uruchamia algorytm
+        """
         self.filter_unfrequent_sequences()
         for seq_b in self.seq_bitmaps:
             i_n = []
-            for item in self.frequent_items:
-                if item[0] > seq_b[0][0][0]:
+            for item in self.frequent_items: 
+                if item[0] > seq_b[0][0][0]: # seq_b[0][0][0] - pierwszy element pierwszego zbioru w sekwencji, np. ([[0]], mapa bitowa) -> 0
                     i_n += [item]
             self.dfs_pruning(seq_b, self.frequent_items, i_n)
 
@@ -167,7 +219,7 @@ if __name__ == "__main__":
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
     print(bitmaps_for_words_ids)
 
-    spam_alg = SPAM(2, bitmaps_for_words_ids)
+    spam_alg = SPAM(0.5, bitmaps_for_words_ids)
     frequent_patterns = spam_alg.spam()
 
     with open("frequent_patterns", 'w') as file: 
