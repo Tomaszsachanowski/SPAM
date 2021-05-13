@@ -23,7 +23,7 @@ def spam_cli():
 help="Start spam algoritm minsup",
 short_help="Start spam algoritm"
 )
-@click.argument('minsup', nargs=1, required=True, type=int)
+@click.argument('minsup', nargs=1, required=True, type=float)
 @click.argument('data_path', nargs=1, required=True, type=str)
 def start(minsup, data_path):
     sequences = DataSequence.data_sequence_factory(
