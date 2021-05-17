@@ -118,3 +118,20 @@ def generate_simple_sequeneces():
     print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
+
+
+def generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction):
+    sequences = []
+    for i in range(number_of_sequences):
+        customer = chr(random.randint(65, 65 + number_of_customers - 1))
+        text_list = random.sample(range(97, 97 + number_of_items), k=random.randint(min_items_in_transaction, max_items_in_transaction))
+        chr_text_list = map(chr, text_list)
+        # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
+        text = ' '.join(chr_text_list)
+        print(text)
+        s = DataSequence(customer=customer, text=text)
+        print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
+        sequences.append(s)
+    print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    return sorted(sequences)
