@@ -7,5 +7,5 @@ setuptools.setup(
     description="SPAM algoritm",
     author=['Gabriela Ossowska', 'Tomasz Sachanowski'],
     packages=setuptools.find_packages(),
-    install_requires=['numpy','dataframe', 'click', 'tweepy']
+    install_requires=['numpy','dataframe', 'click', 'tweepy', 'autocorrect']
 )

@@ -1,8 +1,12 @@
 import pandas as pd
+import re
+
+from autocorrect import spell
 
 from config import Config
 
 TEST = Config.TEST
+TWEET = Config.TWEET
 
 
 class DataSequence():
@@ -26,13 +30,32 @@ class DataSequence():
         return self.cid == other.cid
 
     @staticmethod
+    def preprocessing(text):
+        text = text.replace("’", "").replace("'", "")
+        text = re.sub(
+            r'^https?:\/\/(www\.)?[-a-zA-Z0–9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0–9@:%_\+.~#?&//=]*)',
+            '', text, flags=re.MULTILINE)
+        text = re.sub(
+            r'[-a-zA-Z0–9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0–9@:%_\+.~#?&//=]*)',
+            '', text, flags=re.MULTILINE)
+        text = ' '.join(
+            re.sub(r'(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)',
+            ' ', text).split())
+        text = ' '.join([spell(word) for word in text.split()])
+        text = re.sub(r'\d', '', text)
+        text = text.lower()
+        print("Text", text)
+        return text
+
+    @staticmethod
     def unique_words(text):
         """
         Zwraca posortowany zbiór unikalnych wyrazów w tekscie.
         """
+        clear_text = DataSequence.preprocessing(text)
         unique_words = set()
         # Wyrazy napisane małymi literami.
-        words = text.lower().split()
+        words = clear_text.split()
         for word in words:
             # Usuniecie znakow interpukcyjnych
             word = word.strip('.,!;()[]')
@@ -118,3 +141,13 @@ def generate_simple_sequeneces():
     print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
+
+
+if __name__ == "__main__":
+    sequences =  DataSequence.data_sequence_factory(
+        customers=TWEET['customers'], texts=TWEET['texts'],
+        path=TWEET['output'])
+    print(DataSequence.get_customers())
+    print(DataSequence.get_words())
+    for s in sequences:
+        print("Sequnece {} ->> {}".format(s.cid, s.unique_words_ids))
