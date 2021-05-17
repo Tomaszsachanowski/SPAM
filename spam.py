@@ -197,6 +197,7 @@ class SPAM():
 
 # For test
 from read_data import generate_simple_sequeneces
+from read_data import generate_test_sequeneces
 from bitmap import generate_words_bitmaps
 
 
@@ -214,7 +215,9 @@ def translate_patterns(frequent_patterns):
 
     
 if __name__ == "__main__":
-    sequences = generate_simple_sequeneces()
+#    sequences = generate_simple_sequeneces()
+#    generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction)
+    sequences = generate_test_sequeneces(10, 3, 1, 4, 6)
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
 
     spam_alg = SPAM(0.5, bitmaps_for_words_ids)
