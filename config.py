@@ -20,4 +20,13 @@ class Config(metaclass=Singleton):
         "path": "./data/test_data.csv",
         "customers": "country",
         "texts": "description"
+    },
+    TWEET = {
+        'CONSUMER_KEY': '4Aq6KSNh7oke2DVWIFuq4Vdae',
+        'CONSUMER_SECRET': 'TRu8Y9ZYystbQs6biF8KR3DRM8k1GbTRnsZQNuKAuhamjl1Zl8',
+        'ACCESS_TOKEN': '1392905688318361603-k7lYPGzirhJpqhYd8RCDdQt4cW8jVE',
+        'ACCESS_SECRET': 's4lwFsSPrdJN2qWCmqlUrnA5DpHcf95XXlNpFAM16fN7U',
+        'OUTPUT': 'data/tweet_output.csv',
+        'CID': 'user',
+        'ITEMS': 'text' 
     }

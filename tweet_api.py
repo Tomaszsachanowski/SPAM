@@ -3,43 +3,63 @@ import tweepy as tw
 import pandas as pd
 import datetime
 
-consumer_key= '4Aq6KSNh7oke2DVWIFuq4Vdae'
-consumer_secret= 'TRu8Y9ZYystbQs6biF8KR3DRM8k1GbTRnsZQNuKAuhamjl1Zl8'
-access_token= '1392905688318361603-k7lYPGzirhJpqhYd8RCDdQt4cW8jVE'
-access_token_secret= 's4lwFsSPrdJN2qWCmqlUrnA5DpHcf95XXlNpFAM16fN7U'
+import re
+# from wordsegment import load, segment
+# load()
+from autocorrect import spell
 
-auth = tw.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = tw.API(auth, wait_on_rate_limit=True)
+from config import Config
+
+TWEET = Config.TWEET
+
+class TweetApi():
+
+    auth = tw.OAuthHandler(
+            TWEET['CONSUMER_KEY'], TWEET['CONSUMER_SECRET'])
+    auth.set_access_token(
+            TWEET['ACCESS_TOKEN'], TWEET['ACCESS_SECRET'])
+    api = tw.API(auth, wait_on_rate_limit=True)
+
+    until = datetime.date.today()
+    since = until - datetime.timedelta(days=1)
+
+    @classmethod
+    def collect_tweets(cls, search_word="#Covid-19", items=10):
+        # Collect tweets.
+        search_words = "{} since:{} until:{} -filter:retweets".format(
+            search_word, str(cls.since), str(cls.until))
+        tweets_list = tw.Cursor(
+            cls.api.search, q=search_words, tweet_mode='extended',lang='en').items(items)
+        data = []
+        for tweet in tweets_list:
+            text = tweet._json["full_text"]
+            user_name = tweet.user.screen_name
+            print(text)
+            text = cls.preprocessing(text)
+
+            data.append([user_name, text])   
+        # data = [[tweet.user.screen_name, tweet._json["full_text"]] for tweet in tweets_list]
+        return data
+
+    @staticmethod
+    def preprocessing(text):
+        text = re.sub(r'^https?:\/\/(www\.)?[-a-zA-Z0–9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0–9@:%_\+.~#?&//=]*)', '', text, flags=re.MULTILINE)
+        text = re.sub(r'[-a-zA-Z0–9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0–9@:%_\+.~#?&//=]*)', '', text, flags=re.MULTILINE)
+        text = ' '.join(re.sub(r'(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)', ' ', text).split())
+        text = ' '.join([spell(word) for word in text.split()])
+        text = re.sub(r'\d', '', text)
+        text = text.lower()
+        return text
+
+    @classmethod
+    def save_collected_tweets(cls, data, columns_name=['user', 'text']):
+        tweet_data_frame = pd.DataFrame(
+            data=data, columns=[TWEET['CID'], TWEET['ITEMS']])
+        tweet_data_frame.to_csv(TWEET['OUTPUT'])
 
 
-today = datetime.date.today()
-yesterday= today - datetime.timedelta(days=1)
 
-search_words = "#wildfires"
-date_since = "2018-11-16"
-
-# Collect tweets
-tweets_list = tw.Cursor(
-    api.search, q="#Covid-19 since:" + str(yesterday)+ " until:" + str(today),
-    tweet_mode='extended', lang='en').items(10)
-
-output = []
-for tweet in tweets_list:
-    text = tweet._json["full_text"]
-    print(text)
-    favourite_count = tweet.favorite_count
-    retweet_count = tweet.retweet_count
-    created_at = tweet.created_at
-    
-    line = {
-        'text' : text,
-        'favourite_count' : favourite_count,
-        'retweet_count' : retweet_count,
-        'created_at' : created_at}
-    output.append(line)
-    print(line)
-    print()
-
-df = pd.DataFrame(output)
-df.to_csv('output.csv')
+data = TweetApi.collect_tweets()
+for user_name, text in data:
+    print("user ->>> {}\ntext ->>>> {}\n".format(user_name, text))
+TweetApi.save_collected_tweets(data)
