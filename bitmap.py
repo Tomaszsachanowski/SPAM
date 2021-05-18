@@ -25,7 +25,7 @@ def generate_words_bitmaps(sequences):
         all_vectors.extend(bit_vectors)
 
     all_bitmap = np.array(all_vectors)
-    print(all_bitmap)
+    # print(all_bitmap)
 
     bit_vectors_for_word_ids = []
     for column in range(lenght_of_unique_word):
