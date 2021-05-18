@@ -192,6 +192,7 @@ class SPAM():
                     i_n += [item]
             self.dfs_pruning(seq_b, self.frequent_items, i_n)
 
+        # print(self.frequent_patterns)
         return self.frequent_patterns
         
 
@@ -199,6 +200,8 @@ class SPAM():
 from read_data import generate_simple_sequeneces
 from read_data import generate_test_sequeneces
 from bitmap import generate_words_bitmaps
+import timeit
+import matplotlib.pyplot as plt
 
 
 def translate_patterns(frequent_patterns):
@@ -213,12 +216,52 @@ def translate_patterns(frequent_patterns):
         translated_patterns.append(translated_sequence)
     return translated_patterns
 
+
+#     def foo(num1, num2):
+#     # do something to num1 and num2
+#     pass
+
+#     A = 1
+#     B = 2
+
+#     import timeit
+#     t = timeit.Timer(lambda: foo(A, B)) 
+#     print (t.timeit(5))
+
+
+
+def test_spam(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction, min_sup):
+    sequences = generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction)
+    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    SPAM(min_sup, bitmaps_for_words_ids)
+    
+
+def test_time():
+    # jeden klient, rozne dlugosci sekwencji
+    sequence_lengths = range(1, 30)
+    execution_times = []
+    for i in sequence_lengths:
+        t = timeit.Timer(lambda: test_spam(10, i, 1, 4, 6, 0.5))
+        execution_times.append(
+            t.timeit(100)
+        )
+
+    fig, ax = plt.subplots()
+    ax.plot(sequence_lengths, execution_times)
+
+    ax.set(xlabel='time (s)', ylabel='number of itemsets',
+        title='One sequence on input')
+    ax.grid()
+
+    fig.savefig("test.png")
+    plt.show()
     
 if __name__ == "__main__":
 #    sequences = generate_simple_sequeneces()
 #    generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction)
     sequences = generate_test_sequeneces(10, 3, 1, 4, 6)
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    # print(bitmaps_for_words_ids)
 
     spam_alg = SPAM(0.5, bitmaps_for_words_ids)
     frequent_patterns = spam_alg.spam()
@@ -226,5 +269,7 @@ if __name__ == "__main__":
     with open("frequent_patterns", 'w') as file: 
         for pattern in translate_patterns(frequent_patterns):
             file.write(str(pattern) + '\n')
+
+    test_time()
 
 

@@ -134,7 +134,10 @@ def generate_simple_sequeneces():
         # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
         text = ' '.join(text_list)
         s = DataSequence(customer=customer, text=text)
+        # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
 
 
@@ -146,10 +149,10 @@ def generate_test_sequeneces(number_of_items, number_of_sequences, number_of_cus
         chr_text_list = map(chr, text_list)
         # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
         text = ' '.join(chr_text_list)
-        print(text)
+        # print(text)
         s = DataSequence(customer=customer, text=text)
-        print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
+        # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
-    print("CIDS ->>>> {}".format(DataSequence.get_customers()))
-    print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
