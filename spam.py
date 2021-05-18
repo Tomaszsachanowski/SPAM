@@ -236,7 +236,7 @@ def test_spam(number_of_items, number_of_sequences, number_of_customers, min_ite
     SPAM(min_sup, bitmaps_for_words_ids)
     
 
-def test_time():
+def test_one_sequence_different_itemset_numbers():
     # jeden klient, rozne dlugosci sekwencji
     sequence_lengths = range(1, 30)
     execution_times = []
@@ -253,7 +253,7 @@ def test_time():
         title='One sequence on input')
     ax.grid()
 
-    fig.savefig("test.png")
+    fig.savefig("spam_10_i_1_4_6_05.png")
     plt.show()
     
 if __name__ == "__main__":
@@ -270,6 +270,6 @@ if __name__ == "__main__":
         for pattern in translate_patterns(frequent_patterns):
             file.write(str(pattern) + '\n')
 
-    test_time()
+    test_one_sequence_different_itemset_numbers()
 
 
