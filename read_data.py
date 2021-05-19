@@ -93,6 +93,14 @@ class DataSequence():
             sequences.append(s)
         return sorted(sequences)
 
+    @classmethod
+    def refresh(cls):
+        cls.__unique_words_ids = {}
+        cls.__unique_customers_ids = {}
+        cls.__next_words_ids = 0
+        cls.__next_customers_ids = 0
+
+
 ## Only for test generete simple sequences
 import random
 
@@ -122,6 +130,8 @@ def generate_simple_sequeneces():
 
 def generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction):
     sequences = []
+    s = DataSequence('', '')
+    s.refresh()
     for i in range(number_of_sequences):
         customer = chr(random.randint(65, 65 + number_of_customers - 1))
         text_list = random.sample(range(97, 97 + number_of_items), k=random.randint(min_items_in_transaction, max_items_in_transaction))
@@ -132,6 +142,6 @@ def generate_test_sequeneces(number_of_items, number_of_sequences, number_of_cus
         s = DataSequence(customer=customer, text=text)
         # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
-    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
-    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    #print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    #print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
