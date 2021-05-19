@@ -148,10 +148,12 @@ def generate_simple_sequeneces():
     #print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
 
-def generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction):
+
+def generate_test_sequeneces(number_of_items, number_of_sequences,
+                             number_of_customers, min_items_in_transaction,
+                             max_items_in_transaction):
+    DataSequence.refresh()
     sequences = []
-    s = DataSequence('', '')
-    s.refresh()
     for i in range(number_of_sequences):
         customer = chr(random.randint(65, 65 + number_of_customers - 1))
         text_list = random.sample(range(97, 97 + number_of_items), k=random.randint(min_items_in_transaction, max_items_in_transaction))

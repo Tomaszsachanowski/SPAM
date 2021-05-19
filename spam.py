@@ -2,7 +2,7 @@ import itertools
 import numpy as np
 import copy
 
-from read_data import DataSequence
+from read_data import DataSequence, generate_simple_sequeneces
 
 
 class SPAM():
@@ -13,7 +13,8 @@ class SPAM():
     def __init__(self, min_sup, seq_bitmaps):
         """
         @param min_sup: minimalne wsparcie czestego wzorca
-        @param seq_bitmaps: baza danych w postaci map bitowych, lista krotek - ([id przedmiotu], [[partycja1], [partycja2], ...])
+        @param seq_bitmaps: baza danych w postaci map bitowych,
+        lista krotek - ([id przedmiotu], [[partycja1], [partycja2], ...])
         """
 
         self.min_sup = min_sup * len(seq_bitmaps[0][1])
@@ -63,7 +64,8 @@ class SPAM():
 
     def check_if_frequent_s(self, node, i):
         """
-        Sprawdza, czy po dodaniu do sekwencji nowego zbioru [i] bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+        Sprawdza, czy po dodaniu do sekwencji nowego zbioru [i]
+        bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
 
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy zbior (jednoelementowa lista)
@@ -96,7 +98,9 @@ class SPAM():
 
     def check_if_frequent_i(self, node, i):
         """
-        Sprawdza, czy po dodaniu do ostatniego zbioru sekwencji nowego elementu "i" bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+        Sprawdza, czy po dodaniu do ostatniego zbioru sekwencji
+        nowego elementu "i" bedzie czesta i jesli tak,
+        to zwraca mape bitowa nowej sekwencji
 
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy element
@@ -108,7 +112,8 @@ class SPAM():
 
     def check_if_frequent(self, bitmap_a, bitmap_b):
         """
-        Przeprowadza na bitmapach operacje AND i zwraca nowa bitmape, jesli reprezentuje czesta sekwencje
+        Przeprowadza na bitmapach operacje AND i zwraca nowa bitmape,
+        jesli reprezentuje czesta sekwencje
 
         @param bitmap_a: bitmapa
         @param bitmap_b: bitmapa
@@ -169,7 +174,8 @@ class SPAM():
 
     def filter_unfrequent_sequences(self):
         """
-        Usuwa z bazy wzorce, ktore nie sa czeste (przeznaczona do przefiltrowania jednoelementowych wzorcow podanych przy inicjalizacji)
+        Usuwa z bazy wzorce, ktore nie sa czeste (przeznaczona do przefiltrowania
+        jednoelementowych wzorcow podanych przy inicjalizacji)
         """
         new_seq_bitmaps = []
         for seq_b in self.seq_bitmaps:
@@ -197,7 +203,6 @@ class SPAM():
         
 
 # For test
-from read_data import generate_simple_sequeneces
 from read_data import generate_test_sequeneces
 from bitmap import generate_words_bitmaps
 import timeit
@@ -217,103 +222,16 @@ def translate_patterns(frequent_patterns):
     return translated_patterns
 
 
-#     def foo(num1, num2):
-#     # do something to num1 and num2
-#     pass
-
-#     A = 1
-#     B = 2
-
-#     import timeit
-#     t = timeit.Timer(lambda: foo(A, B)) 
-#     print (t.timeit(5))
-
-
-
-def test_spam(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction, min_sup):
-    sequences = generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction)
-    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
-    SPAM(min_sup, bitmaps_for_words_ids)
-    
-
-def test_one_sequence_different_itemset_numbers():
-    # jeden klient, rozne dlugosci sekwencji
-    sequence_lengths = range(1, 30)
-    execution_times = []
-    for i in sequence_lengths:
-        t = timeit.Timer(lambda: test_spam(10, i, 1, 4, 6, 0.5))
-        execution_times.append(
-            t.timeit(100)
-        )
-
-    fig, ax = plt.subplots()
-    ax.plot(sequence_lengths, execution_times)
-
-    ax.set(xlabel='number of itemsets', ylabel='time (s)',
-        title='One sequence on input')
-    ax.grid()
-
-    fig.savefig("spam_10_i_1_4_6_05.png")
-    plt.show()
-
-
-def test_different_item_numbers():
-    # jeden klient, rozne dlugosci sekwencji
-    item_numbers = range(3, 30)
-    execution_times = []
-    for i in item_numbers:
-        t = timeit.Timer(lambda: test_spam(i, 3, 5, int(i/3), int(i/3), 0.5))
-        execution_times.append(
-            t.timeit(100)
-        )
-
-    fig, ax = plt.subplots()
-    ax.plot(item_numbers, execution_times)
-
-    ax.set(xlabel='number of items', ylabel='time (s)',
-        title='Differing item numbers')
-    ax.grid()
-
-    fig.savefig("spam_i_3_5_4_6_05.png")
-    plt.show()
-
-
-def test_different_sequence_numbers():
-    # jeden klient, rozne dlugosci sekwencji
-    sequence_numbers = range(10, 30)
-    execution_times = []
-    for i in sequence_numbers:
-        t = timeit.Timer(lambda: test_spam(10, 5, i, 4, 6, 0.5))
-        execution_times.append(
-            t.timeit(100)
-        )
-
-    fig, ax = plt.subplots()
-    ax.plot(sequence_numbers, execution_times)
-
-    ax.set(xlabel='number of customers (input sequences)', ylabel='time (s)',
-        title='Differing number of input sequnces')
-    ax.grid()
-
-    fig.savefig("spam_10_5_i_4_6_05.png")
-    plt.show()
-    
 if __name__ == "__main__":
-#    sequences = generate_simple_sequeneces()
-#    generate_test_sequeneces(number_of_items, number_of_sequences, number_of_customers, min_items_in_transaction, max_items_in_transaction)
-#    sequences = generate_test_sequeneces(10, 3, 5, 4, 6)
-#    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    sequences = generate_simple_sequeneces()
+    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
     #print(bitmaps_for_words_ids)
 
-#    spam_alg = SPAM(0.5, bitmaps_for_words_ids)
-#    frequent_patterns = spam_alg.spam()
+    spam_alg = SPAM(0.5, bitmaps_for_words_ids)
+    frequent_patterns = spam_alg.spam()
 
-#    with open("frequent_patterns", 'w') as file: 
-#        for pattern in translate_patterns(frequent_patterns):
-#            file.write(str(pattern) + '\n')
-
-    #test_one_sequence_different_itemset_numbers()
-    #test_different_sequence_numbers()
-    test_different_item_numbers()
+    with open("frequent_patterns", 'w') as file: 
+        for pattern in translate_patterns(frequent_patterns):
+            file.write(str(pattern) + '\n')
 
 
