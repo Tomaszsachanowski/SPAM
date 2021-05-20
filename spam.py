@@ -192,7 +192,6 @@ class SPAM():
                     i_n += [item]
             self.dfs_pruning(seq_b, self.frequent_items, i_n)
 
-        print(self.frequent_patterns)
         return self.frequent_patterns
         
 
@@ -217,7 +216,6 @@ def translate_patterns(frequent_patterns):
 if __name__ == "__main__":
     sequences = generate_simple_sequeneces()
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
-    print(bitmaps_for_words_ids)
 
     spam_alg = SPAM(0.5, bitmaps_for_words_ids)
     frequent_patterns = spam_alg.spam()
