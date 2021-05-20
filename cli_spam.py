@@ -48,11 +48,7 @@ def start(minsup, data_path):
 @click.argument('search_word', type=str, default=TWEET['search_word'])
 @click.argument('items', type=int, default=TWEET['items'])
 def get_tweets(search_word, items):
-    click.echo(search_word)
-    click.echo(items)
     data = TweetApi.collect_tweets(search_word=search_word, items=items)
-    for user_name, text in data:
-        print("user ->>> {}\ntext ->>>> {}\n".format(user_name, text))
     TweetApi.save_collected_tweets(data)
 
 

@@ -6,7 +6,6 @@ from autocorrect import spell
 from config import Config
 
 TEST = Config.TEST
-TWEET = Config.TWEET
 
 
 class DataSequence():
@@ -44,7 +43,6 @@ class DataSequence():
         text = ' '.join([spell(word) for word in text.split()])
         text = re.sub(r'\d', '', text)
         text = text.lower()
-        print("Text", text)
         return text
 
     @staticmethod
@@ -136,18 +134,5 @@ def generate_simple_sequeneces():
         # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
         text = ' '.join(text_list)
         s = DataSequence(customer=customer, text=text)
-        print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
-    print("CIDS ->>>> {}".format(DataSequence.get_customers()))
-    print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
-
-
-if __name__ == "__main__":
-    sequences =  DataSequence.data_sequence_factory(
-        customers=TWEET['customers'], texts=TWEET['texts'],
-        path=TWEET['output'])
-    print(DataSequence.get_customers())
-    print(DataSequence.get_words())
-    for s in sequences:
-        print("Sequnece {} ->> {}".format(s.cid, s.unique_words_ids))

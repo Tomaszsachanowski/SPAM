@@ -34,11 +34,3 @@ class TweetApi():
         tweet_data_frame = pd.DataFrame(
             data=data, columns=columns_name)
         tweet_data_frame.to_csv(TWEET['output'])
-
-
-if __name__ == "__main__":
-
-    data = TweetApi.collect_tweets()
-    for user_name, text in data:
-        print("user ->>> {}\ntext ->>>> {}\n".format(user_name, text))
-    TweetApi.save_collected_tweets(data)
