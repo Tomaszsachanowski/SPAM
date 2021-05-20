@@ -144,8 +144,8 @@ def generate_simple_sequeneces():
         s = DataSequence(customer=customer, text=text)
         # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
-    #print("CIDS ->>>> {}".format(DataSequence.get_customers()))
-    #print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
 
 
