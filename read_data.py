@@ -152,6 +152,10 @@ def generate_simple_sequeneces():
 def generate_test_sequeneces(number_of_items, number_of_sequences,
                              number_of_customers, min_items_in_transaction,
                              max_items_in_transaction):
+   # print("Start generate")
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+
     DataSequence.refresh()
     sequences = []
     for i in range(number_of_sequences):
@@ -162,8 +166,10 @@ def generate_test_sequeneces(number_of_items, number_of_sequences,
         text = ' '.join(chr_text_list)
         # print(text)
         s = DataSequence(customer=customer, text=text)
+        # print("Customer: {} ->> tekst: {}".format(customer, text))
         # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
+    # print("Stop generate")
     # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
