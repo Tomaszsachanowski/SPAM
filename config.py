@@ -24,12 +24,12 @@ class Config(metaclass=Singleton):
         'search_word': "#Covid-19",
         'items': 10,
         'output': 'data/tweet_output.csv',
-        'customers': 'user',
+        'customers': 'name',
         'texts': 'text'
     }
 
     TEST = {
         "path": "./data/test_data.csv",
-        "customers": "country",
+        "customers": "name",
         "texts": "text"
     }

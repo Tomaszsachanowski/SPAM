@@ -30,9 +30,9 @@ class TweetApi():
         return data
 
     @classmethod
-    def save_collected_tweets(cls, data, columns_name=['user', 'text']):
+    def save_collected_tweets(cls, data, columns_name=[TWEET['customers'], TWEET['texts']]):
         tweet_data_frame = pd.DataFrame(
-            data=data, columns=[TWEET['customers'], TWEET['texts']])
+            data=data, columns=columns_name)
         tweet_data_frame.to_csv(TWEET['output'])
 
 
