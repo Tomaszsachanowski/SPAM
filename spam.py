@@ -7,9 +7,6 @@ from read_data import DataSequence, generate_simple_sequeneces
 
 class SPAM():
 
-    frequent_items = []
-    frequent_patterns = []
-
     def __init__(self, min_sup, seq_bitmaps):
         """
         @param min_sup: minimalne wsparcie czestego wzorca
@@ -19,7 +16,8 @@ class SPAM():
 
         self.min_sup = min_sup * len(seq_bitmaps[0][1])
         self.seq_bitmaps = seq_bitmaps
-
+        self.frequent_items = []
+        self.frequent_patterns = []
 
     def dfs_pruning(self, node, s_n, i_n):
         """
