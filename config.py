@@ -16,8 +16,20 @@ class Singleton(type):
 
 
 class Config(metaclass=Singleton):
+    TWEET = {
+        'CONSUMER_KEY': '4Aq6KSNh7oke2DVWIFuq4Vdae',
+        'CONSUMER_SECRET': 'TRu8Y9ZYystbQs6biF8KR3DRM8k1GbTRnsZQNuKAuhamjl1Zl8',
+        'ACCESS_TOKEN': '1392905688318361603-k7lYPGzirhJpqhYd8RCDdQt4cW8jVE',
+        'ACCESS_SECRET': 's4lwFsSPrdJN2qWCmqlUrnA5DpHcf95XXlNpFAM16fN7U',
+        'search_word': "#Covid-19",
+        'items': 10,
+        'output': 'data/tweet_output.csv',
+        'customers': 'name',
+        'texts': 'text'
+    }
+
     TEST = {
         "path": "./data/test_data.csv",
-        "customers": "country",
-        "texts": "description"
+        "customers": "name",
+        "texts": "text"
     }
