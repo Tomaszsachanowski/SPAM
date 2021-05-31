@@ -1,6 +1,5 @@
 import pandas as pd
 import re
-import cmap
 
 from autocorrect import spell
 
@@ -95,6 +94,10 @@ class DataSequence():
         return None
 
     @classmethod
+    def get_cids(cls):
+        return cls.__unique_customers_ids
+
+    @classmethod
     def get_customers(cls, cid=None):
         if cid is None:
             return cls.__unique_customers_ids
@@ -147,8 +150,6 @@ def generate_simple_sequeneces():
         sequences.append(s)
     print("CIDS ->>>> {}".format(DataSequence.get_customers()))
     print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
-    seq_list = cmap.transform_sequences_into_lists(sequences, len(DataSequence.get_customers()))
-    cmap.CMAP(seq_list, 3)
     return sorted(sequences)
 
 

@@ -24,7 +24,6 @@ class CMAP():
         self.min_sup = min_sup
         self.cmap_count = []
         self.cmap = {}
-        self.build_cmap_s()
 
 
     def add_to_cmap_count(self, item, ext):
@@ -56,10 +55,10 @@ class CMAP():
                         self.add_to_cmap_count(item, ext)
 
         self.set_cmap()
-        print(self.cmap)
-        for i in self.cmap_count:
-            print("item {}".format(i.get_word_id()))
-            print(i.get_extensions())
+       # print(self.cmap)
+       # for i in self.cmap_count:
+          #  print("item {}".format(i.get_word_id()))
+          #  print(i.get_extensions())
         return self.cmap
 
 
@@ -77,10 +76,10 @@ class CMAP():
                             self.add_to_cmap_count(item, ext)
                             checked_pairs.append((item, ext))
         self.set_cmap()
-        print(self.cmap)
-        for i in self.cmap_count:
-            print("item {}".format(i.get_word_id()))
-            print(i.get_extensions())
+       # print(self.cmap)
+       # for i in self.cmap_count:
+           # print("item {}".format(i.get_word_id()))
+           # print(i.get_extensions())
         return self.cmap
 
 

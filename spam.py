@@ -1,3 +1,4 @@
+from cmap import CMAP, transform_sequences_into_lists
 import itertools
 import numpy as np
 import copy
@@ -7,7 +8,7 @@ from read_data import DataSequence, generate_simple_sequeneces
 
 class SPAM():
 
-    def __init__(self, min_sup, seq_bitmaps):
+    def __init__(self, min_sup, seq_bitmaps, cmap_i, cmap_s):
         """
         @param min_sup: minimalne wsparcie czestego wzorca
         @param seq_bitmaps: baza danych w postaci map bitowych,
@@ -18,6 +19,26 @@ class SPAM():
         self.seq_bitmaps = seq_bitmaps
         self.frequent_items = []
         self.frequent_patterns = []
+        self.cmap_i = cmap_i
+        self.cmap_s = cmap_s
+
+
+    def is_extension_in_cmap_i(self, pattern, ext):
+        if pattern[-1][-1] not in self.cmap_i:
+            return False
+        extensions_of_last_item = self.cmap_i[pattern[-1][-1]]
+        if (ext in extensions_of_last_item):
+            return True
+        return False
+
+    
+    def is_extension_in_cmap_s(self, pattern, ext):
+        if pattern[-1][-1] not in self.cmap_s:
+            return False
+        extensions_of_last_item = self.cmap_s[pattern[-1][-1]]
+        if (ext in extensions_of_last_item):
+            return True
+        return False
 
 
     def dfs_pruning(self, node, s_n, i_n):
@@ -38,24 +59,32 @@ class SPAM():
         new_frequent_patterns_s = []
         new_frequent_patterns_i = []
 
+        i_temp_s_step = []
         for i in s_n:
             new_node_bitmap = self.check_if_frequent_s(node, i)
             if new_node_bitmap is not None:
                 new_sequence = node[0] + [i]
                 new_frequent_patterns_s.append((new_sequence, new_node_bitmap))
-                s_temp.append(i)
+                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
+                if self.is_extension_in_cmap_s(node[0], i[0]):
+                    s_temp.append(i)
+                if self.is_extension_in_cmap_i(node[0], i[0]):
+                    i_temp_s_step.append(i)
         
         for new_node in new_frequent_patterns_s:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], s_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], i_temp_s_step)))
 
         for i in i_n:
             new_node_bitmap = self.check_if_frequent_i(node, i)
             if new_node_bitmap is not None:
                 new_sequence = self.i_extend(node[0], i[0])
                 new_frequent_patterns_i.append((new_sequence, new_node_bitmap))
+                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
+                if self.is_extension_in_cmap_i(node[0], i[0]):
+                    i_temp.append(i)
 
         for new_node in new_frequent_patterns_i:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], i_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], i_temp)))
 
         self.frequent_patterns = self.frequent_patterns + new_frequent_patterns_s + new_frequent_patterns_i
 
@@ -69,6 +98,9 @@ class SPAM():
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy zbior (jednoelementowa lista)
         """
+
+        if self.is_extension_in_cmap_s(node[0], i[0]) is False:
+            return None
         node_bitmap = self.bitmap_transform(node[1])
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
@@ -104,6 +136,9 @@ class SPAM():
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy element
         """
+
+        if self.is_extension_in_cmap_i(node[0], i[0]) is False:
+            return None
         node_bitmap = self.get_bitmap(node[0])
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
@@ -117,6 +152,7 @@ class SPAM():
         @param bitmap_a: bitmapa
         @param bitmap_b: bitmapa
         """
+
         new_node_bitmap = self.and_partitions(bitmap_a, bitmap_b)
         if (self.count_support(new_node_bitmap) >= self.min_sup):
             return new_node_bitmap
@@ -225,8 +261,12 @@ if __name__ == "__main__":
     sequences = generate_simple_sequeneces()
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
     #print(bitmaps_for_words_ids)
+    min_sup = 0.5
+    seq_list = transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
+    cmap_i = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_i()
+    cmap_s = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_s()
 
-    spam_alg = SPAM(0.5, bitmaps_for_words_ids)
+    spam_alg = SPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
     frequent_patterns = spam_alg.spam()
 
     with open("frequent_patterns", 'w') as file: 
