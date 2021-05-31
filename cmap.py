@@ -24,9 +24,10 @@ class CMAP():
         self.min_sup = min_sup
         self.cmap_count = []
         self.cmap = {}
-        self.build_cmap_i()
+        self.build_cmap_s()
 
-    def add_to_cmap(self, item, ext):
+
+    def add_to_cmap_count(self, item, ext):
         citem = next((citem for citem in self.cmap_count if citem.get_word_id() == item), None)
         if citem == None:
             citem = CMAP_item(item)
@@ -35,14 +36,8 @@ class CMAP():
         else:
             citem.add_occurence(ext)
 
-    def build_cmap_i(self):
-        for sequence in self.seq_list:
-            for itemset in sequence:
-                for item in itemset:
-                    filtered_itemset = filter(lambda ext: (ext > item), itemset)
-                    for ext in filtered_itemset:
-                        self.add_to_cmap(item, ext)
 
+    def set_cmap(self):
         for citem in self.cmap_count:
             extensions_count = citem.get_extensions()
             min_extensions = []
@@ -51,12 +46,42 @@ class CMAP():
                     min_extensions.append(ext)
             self.cmap[citem.get_word_id()] = min_extensions
 
+
+    def build_cmap_i(self):
+        for sequence in self.seq_list:
+            for itemset in sequence:
+                for item in itemset:
+                    filtered_itemset = filter(lambda ext: (ext > item), itemset)
+                    for ext in filtered_itemset:
+                        self.add_to_cmap_count(item, ext)
+
+        self.set_cmap()
         print(self.cmap)
         for i in self.cmap_count:
             print("item {}".format(i.get_word_id()))
             print(i.get_extensions())
         return self.cmap
 
+
+    def build_cmap_s(self):
+        for sequence in self.seq_list:
+            checked_pairs = []
+            itemsets_count = len(sequence)
+            for extensions_itemset in range(itemsets_count - 1, -1, -1):
+                previous_items = set()
+                for items_itemset in range(extensions_itemset - 1, -1, -1):
+                    previous_items.update(sequence[items_itemset])
+                for ext in sequence[extensions_itemset]:
+                    for item in previous_items:
+                        if (item, ext) not in checked_pairs:
+                            self.add_to_cmap_count(item, ext)
+                            checked_pairs.append((item, ext))
+        self.set_cmap()
+        print(self.cmap)
+        for i in self.cmap_count:
+            print("item {}".format(i.get_word_id()))
+            print(i.get_extensions())
+        return self.cmap
 
 
 def transform_sequences_into_lists(sequences, cids_number):
