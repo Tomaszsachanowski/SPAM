@@ -19,6 +19,7 @@ class SPAM():
         self.frequent_items = []
         self.frequent_patterns = []
 
+
     def dfs_pruning(self, node, s_n, i_n):
         """
         Przeszukuje drzewo w glab, przycinajac je zgodnie z zasada apriori.

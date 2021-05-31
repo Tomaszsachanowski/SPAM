@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import cmap
 
 from autocorrect import spell
 
@@ -142,10 +143,12 @@ def generate_simple_sequeneces():
         # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
         text = ' '.join(text_list)
         s = DataSequence(customer=customer, text=text)
-        # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
+        print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
-    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
-    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    seq_list = cmap.transform_sequences_into_lists(sequences, len(DataSequence.get_customers()))
+    cmap.CMAP(seq_list, 3)
     return sorted(sequences)
 
 
