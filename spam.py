@@ -7,9 +7,6 @@ from read_data import DataSequence
 
 class SPAM():
 
-    frequent_items = []
-    frequent_patterns = []
-
     def __init__(self, min_sup, seq_bitmaps):
         """
         @param min_sup: minimalne wsparcie czestego wzorca
@@ -18,6 +15,8 @@ class SPAM():
 
         self.min_sup = min_sup * len(seq_bitmaps[0][1])
         self.seq_bitmaps = seq_bitmaps
+        self.frequent_items = []
+        self.frequent_patterns = []
 
 
     def dfs_pruning(self, node, s_n, i_n):
@@ -43,19 +42,22 @@ class SPAM():
             if new_node_bitmap is not None:
                 new_sequence = node[0] + [i]
                 new_frequent_patterns_s.append((new_sequence, new_node_bitmap))
+                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
                 s_temp.append(i)
         
         for new_node in new_frequent_patterns_s:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], s_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], s_temp)))
 
         for i in i_n:
             new_node_bitmap = self.check_if_frequent_i(node, i)
             if new_node_bitmap is not None:
                 new_sequence = self.i_extend(node[0], i[0])
                 new_frequent_patterns_i.append((new_sequence, new_node_bitmap))
+                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
+                i_temp.append(i)
 
         for new_node in new_frequent_patterns_i:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], i_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], i_temp)))
 
         self.frequent_patterns = self.frequent_patterns + new_frequent_patterns_s + new_frequent_patterns_i
 
