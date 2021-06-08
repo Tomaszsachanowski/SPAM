@@ -144,6 +144,7 @@ def test_different_min_sup():
     fig.savefig(make_file_name('100', '5', '3', '2', '3', '0i'))
     plt.show()
 
+
 def test_tweets():
     execution_times = []
     amount_tweets = [3, 5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35]
@@ -168,6 +169,35 @@ def test_tweets():
 
     fig.savefig("tweets time")
     plt.show()
+
+
+def test_tweets_min_sup():
+    execution_times = []
+    search_word = "#Covid-19"
+    items = 30
+    data = TweetApi.collect_tweets(
+        search_word=search_word, items=items)
+    TweetApi.save_collected_tweets(data)
+    sequences = DataSequence.data_sequence_factory(
+        customers="name", texts="text",
+        path="data/tweet_output.csv")
+
+    min_sup = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
+    for sup in min_sup:
+
+        mean_time = measure_cmap_spam(sequences, min_sup=min_sup)
+        execution_times.append(mean_time)
+
+    fig, ax = plt.subplots()
+    ax.plot(min_sup, execution_times, 'o', color='red', label="CM-SPAM")
+
+    ax.set(xlabel='minimal support', ylabel='time (s)',
+        title='Execution time by minimal support for CM-SPAM')
+    ax.grid()
+    plt.legend()
+    fig.savefig("tweets min sup")
+    plt.show()
+
 
 if __name__ == "__main__":
     #test_one_sequence_different_itemset_numbers()
