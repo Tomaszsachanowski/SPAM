@@ -1,6 +1,7 @@
 # For test
 import time
 import matplotlib.pyplot as plt
+import sys
 
 from cmap import CMAP, transform_sequences_into_lists
 from read_data import generate_simple_sequeneces, generate_test_sequeneces
@@ -13,6 +14,14 @@ from spam import SPAM, translate_patterns
 from config import Config
 from tweet_api import TweetApi
 
+@profile
+def measure_memory(sequences, min_sup=0.5):
+    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    seq_list = transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
+    cmap_i = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_i()
+    cmap_s = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_s()
+    spam_alg = SPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
+    spam_alg.spam()
 
 def measure_cmap_spam(sequences, min_sup=0.5):
     time_result = []
