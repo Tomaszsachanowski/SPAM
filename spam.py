@@ -2,23 +2,22 @@ import itertools
 import numpy as np
 import copy
 
-from read_data import DataSequence
+from read_data import DataSequence, generate_simple_sequeneces
 
 
 class SPAM():
 
-    frequent_items = []
-    frequent_patterns = []
-
     def __init__(self, min_sup, seq_bitmaps):
         """
         @param min_sup: minimalne wsparcie czestego wzorca
-        @param seq_bitmaps: baza danych w postaci map bitowych, lista krotek - ([id przedmiotu], [[partycja1], [partycja2], ...])
+        @param seq_bitmaps: baza danych w postaci map bitowych,
+        lista krotek - ([id przedmiotu], [[partycja1], [partycja2], ...])
         """
 
         self.min_sup = min_sup * len(seq_bitmaps[0][1])
         self.seq_bitmaps = seq_bitmaps
-
+        self.frequent_items = []
+        self.frequent_patterns = []
 
     def dfs_pruning(self, node, s_n, i_n):
         """
@@ -63,7 +62,8 @@ class SPAM():
 
     def check_if_frequent_s(self, node, i):
         """
-        Sprawdza, czy po dodaniu do sekwencji nowego zbioru [i] bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+        Sprawdza, czy po dodaniu do sekwencji nowego zbioru [i]
+        bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
 
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy zbior (jednoelementowa lista)
@@ -96,7 +96,9 @@ class SPAM():
 
     def check_if_frequent_i(self, node, i):
         """
-        Sprawdza, czy po dodaniu do ostatniego zbioru sekwencji nowego elementu "i" bedzie czesta i jesli tak, to zwraca mape bitowa nowej sekwencji
+        Sprawdza, czy po dodaniu do ostatniego zbioru sekwencji
+        nowego elementu "i" bedzie czesta i jesli tak,
+        to zwraca mape bitowa nowej sekwencji
 
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy element
@@ -108,7 +110,8 @@ class SPAM():
 
     def check_if_frequent(self, bitmap_a, bitmap_b):
         """
-        Przeprowadza na bitmapach operacje AND i zwraca nowa bitmape, jesli reprezentuje czesta sekwencje
+        Przeprowadza na bitmapach operacje AND i zwraca nowa bitmape,
+        jesli reprezentuje czesta sekwencje
 
         @param bitmap_a: bitmapa
         @param bitmap_b: bitmapa
@@ -169,7 +172,8 @@ class SPAM():
 
     def filter_unfrequent_sequences(self):
         """
-        Usuwa z bazy wzorce, ktore nie sa czeste (przeznaczona do przefiltrowania jednoelementowych wzorcow podanych przy inicjalizacji)
+        Usuwa z bazy wzorce, ktore nie sa czeste (przeznaczona do przefiltrowania
+        jednoelementowych wzorcow podanych przy inicjalizacji)
         """
         new_seq_bitmaps = []
         for seq_b in self.seq_bitmaps:
@@ -192,12 +196,15 @@ class SPAM():
                     i_n += [item]
             self.dfs_pruning(seq_b, self.frequent_items, i_n)
 
+        # print(self.frequent_patterns)
         return self.frequent_patterns
         
 
 # For test
-from read_data import generate_simple_sequeneces
+from read_data import generate_test_sequeneces
 from bitmap import generate_words_bitmaps
+import timeit
+import matplotlib.pyplot as plt
 
 
 def translate_patterns(frequent_patterns):
@@ -212,10 +219,11 @@ def translate_patterns(frequent_patterns):
         translated_patterns.append(translated_sequence)
     return translated_patterns
 
-    
+
 if __name__ == "__main__":
     sequences = generate_simple_sequeneces()
     bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    #print(bitmaps_for_words_ids)
 
     spam_alg = SPAM(0.5, bitmaps_for_words_ids)
     frequent_patterns = spam_alg.spam()

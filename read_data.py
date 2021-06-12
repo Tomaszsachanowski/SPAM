@@ -114,6 +114,14 @@ class DataSequence():
             sequences.append(s)
         return sorted(sequences)
 
+    @classmethod
+    def refresh(cls):
+        cls.__unique_words_ids = {}
+        cls.__unique_customers_ids = {}
+        cls.__next_words_ids = 0
+        cls.__next_customers_ids = 0
+
+
 ## Only for test generete simple sequences
 import random
 
@@ -134,5 +142,34 @@ def generate_simple_sequeneces():
         # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
         text = ' '.join(text_list)
         s = DataSequence(customer=customer, text=text)
+        # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
         sequences.append(s)
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+    return sorted(sequences)
+
+
+def generate_test_sequeneces(number_of_items, number_of_sequences,
+                             number_of_customers, min_items_in_transaction,
+                             max_items_in_transaction):
+   # print("Start generate")
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
+
+    DataSequence.refresh()
+    sequences = []
+    for i in range(number_of_sequences):
+        customer = chr(random.randint(65, 65 + number_of_customers - 1))
+        text_list = random.sample(range(97, 97 + number_of_items), k=random.randint(min_items_in_transaction, max_items_in_transaction))
+        chr_text_list = map(chr, text_list)
+        # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
+        text = ' '.join(chr_text_list)
+        # print(text)
+        s = DataSequence(customer=customer, text=text)
+        # print("Customer: {} ->> tekst: {}".format(customer, text))
+        # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
+        sequences.append(s)
+    # print("Stop generate")
+    # print("CIDS ->>>> {}".format(DataSequence.get_customers()))
+    # print("Word_IDS ->>>> {}".format(DataSequence.get_words()))
     return sorted(sequences)
