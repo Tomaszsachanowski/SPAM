@@ -1,11 +1,11 @@
 # For test
-import time
 import matplotlib.pyplot as plt
+from memory_profiler import profile
+import timeit
 
 from read_data import DataSequence, generate_simple_sequeneces, generate_test_sequeneces
 from bitmap import generate_words_bitmaps
 from spam import SPAM
-import timeit
 from tweet_api import TweetApi
 
 
@@ -30,7 +30,7 @@ def measure_spam(number_of_items, number_of_sequences,
               number_of_customers, min_items_in_transaction,
               max_items_in_transaction, min_sup):
     time_result = []
-    for i in range(100):
+    for i in range(10):
         #print("probka {}".format(i))
         sequences = generate_test_sequeneces(
             number_of_items, number_of_sequences, number_of_customers,
@@ -197,7 +197,6 @@ def test_tweets_min_sup():
     plt.legend()
     fig.savefig("images/tweets min sup")
     plt.show()
-
 
 
 if __name__ == "__main__":

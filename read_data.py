@@ -1,12 +1,17 @@
 import pandas as pd
 import re
 
-from autocorrect import spell
+
+from autocorrect import Speller
+import nltk
+from nltk.corpus import words
 
 from config import Config
 
 TEST = Config.TEST
-
+nltk.download('words')
+WORD_LIST = words.words()
+SPELL = Speller(lang='en')
 
 class DataSequence():
 
@@ -40,7 +45,7 @@ class DataSequence():
         text = ' '.join(
             re.sub(r'(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)',
             ' ', text).split())
-        text = ' '.join([spell(word) for word in text.split()])
+        text = ' '.join([SPELL(word) for word in text.split()])
         text = re.sub(r'\d', '', text)
         text = text.lower()
         return text
@@ -158,13 +163,14 @@ def generate_test_sequeneces(number_of_items, number_of_sequences,
 
     DataSequence.refresh()
     sequences = []
+    # Wyrazy w jezyku angielskim
+    items = random.sample(WORD_LIST, number_of_items)
+
     for i in range(number_of_sequences):
         customer = chr(random.randint(65, 65 + number_of_customers - 1))
-        text_list = random.sample(range(97, 97 + number_of_items), k=random.randint(min_items_in_transaction, max_items_in_transaction))
-        chr_text_list = map(chr, text_list)
-        # Tworzę z liter wyrazy jedno literowe do klasy przetwarzającej
-        text = ' '.join(chr_text_list)
-        # print(text)
+        text_list = random.sample(items, k=random.randint(min_items_in_transaction, max_items_in_transaction))
+        # Tworze z wuylosowanych wyrazow tekst dla klasy przetwarzajacej
+        text = ' '.join(text_list)  
         s = DataSequence(customer=customer, text=text)
         # print("Customer: {} ->> tekst: {}".format(customer, text))
         # print("{} ->>>> ({})".format(s.cid, s.unique_words_ids))
