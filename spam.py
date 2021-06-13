@@ -46,16 +46,17 @@ class SPAM():
                 s_temp.append(i)
         
         for new_node in new_frequent_patterns_s:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], s_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], s_temp)))
 
         for i in i_n:
             new_node_bitmap = self.check_if_frequent_i(node, i)
             if new_node_bitmap is not None:
                 new_sequence = self.i_extend(node[0], i[0])
                 new_frequent_patterns_i.append((new_sequence, new_node_bitmap))
+                i_temp.append(i)
 
         for new_node in new_frequent_patterns_i:
-            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > i[0], i_temp)))
+            self.dfs_pruning(new_node, s_temp, list(filter(lambda x: x[0] > new_node[0][-1][-1], i_temp)))
 
         self.frequent_patterns = self.frequent_patterns + new_frequent_patterns_s + new_frequent_patterns_i
 
@@ -101,7 +102,7 @@ class SPAM():
         @param node: krotka (sekwencja, mapa bitowa sekwencji)
         @param i: nowy element
         """
-        node_bitmap = self.get_bitmap(node[0])
+        node_bitmap = node[1]
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
 
