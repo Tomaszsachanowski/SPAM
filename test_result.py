@@ -1,12 +1,39 @@
 # For test
 import time
 import matplotlib.pyplot as plt
+import sys
 
+from cmap import CMAP, transform_sequences_into_lists
 from read_data import generate_simple_sequeneces, generate_test_sequeneces
 from bitmap import generate_words_bitmaps
 from spam import CMSPAM
 import timeit
+from read_data import DataSequence
+from bitmap import generate_words_bitmaps
+from spam import SPAM, translate_patterns
+from config import Config
+from tweet_api import TweetApi
 
+@profile
+def measure_memory(sequences, min_sup=0.5):
+    bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+    seq_list = transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
+    cmap_i = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_i()
+    cmap_s = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_s()
+    spam_alg = SPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
+    spam_alg.spam()
+
+def measure_cmap_spam(sequences, min_sup=0.5):
+    time_result = []
+    for i in range(10):
+        bitmaps_for_words_ids = generate_words_bitmaps(sequences)
+        seq_list = transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
+        cmap_i = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_i()
+        cmap_s = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_s()
+        spam_alg = SPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
+        time_result.append(timeit.timeit(spam_alg.spam, number = 1))
+    mean = sum(time_result)/len(time_result)
+    return mean
 
 def measure_spam(number_of_items, number_of_sequences,
               number_of_customers, min_items_in_transaction,
@@ -127,6 +154,60 @@ def test_different_min_sup():
     plt.show()
 
 
+def test_tweets():
+    execution_times = []
+    amount_tweets = [3, 5, 8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35]
+    for i in amount_tweets:
+        search_word = "#Covid-19"
+        items = i
+        data = TweetApi.collect_tweets(
+            search_word=search_word, items=items)
+        TweetApi.save_collected_tweets(data)
+        sequences = DataSequence.data_sequence_factory(
+            customers="name", texts="text",
+            path="data/tweet_output.csv")
+        mean_time = measure_cmap_spam(sequences, min_sup=0.5)
+        execution_times.append(mean_time)
+
+    fig, ax = plt.subplots()
+    ax.plot(amount_tweets, execution_times, 'o', color='black')
+
+    ax.set(xlabel='number of tweets', ylabel='time (s)',
+        title='Execution time by number of tweets')
+    ax.grid()
+
+    fig.savefig("tweets time")
+    plt.show()
+
+
+def test_tweets_min_sup():
+    execution_times = []
+    search_word = "#Covid-19"
+    items = 30
+    data = TweetApi.collect_tweets(
+        search_word=search_word, items=items)
+    TweetApi.save_collected_tweets(data)
+    sequences = DataSequence.data_sequence_factory(
+        customers="name", texts="text",
+        path="data/tweet_output.csv")
+
+    min_sup = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
+    for sup in min_sup:
+
+        mean_time = measure_cmap_spam(sequences, min_sup=min_sup)
+        execution_times.append(mean_time)
+
+    fig, ax = plt.subplots()
+    ax.plot(min_sup, execution_times, 'o', color='red', label="CM-SPAM")
+
+    ax.set(xlabel='minimal support', ylabel='time (s)',
+        title='Execution time by minimal support for CM-SPAM')
+    ax.grid()
+    plt.legend()
+    fig.savefig("tweets min sup")
+    plt.show()
+
+
 if __name__ == "__main__":
     #test_one_sequence_different_itemset_numbers()
     #test_different_item_numbers_fixed_itemset_size()
@@ -134,4 +215,3 @@ if __name__ == "__main__":
     #test_different_sequence_numbers()
     #test_different_min_sup()
 
-    
