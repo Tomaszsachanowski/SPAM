@@ -2,9 +2,9 @@ import setuptools
 
 setuptools.setup(
 
-    name="SPAM",
+    name="CMSPAM",
     version="0.1",
-    description="SPAM algoritm",
+    description="CMSPAM algoritm",
     author=['Gabriela Ossowska', 'Tomasz Sachanowski'],
     packages=setuptools.find_packages(),
     install_requires=['numpy','dataframe', 'click', 'tweepy', 'autocorrect']

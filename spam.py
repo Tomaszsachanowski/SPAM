@@ -6,7 +6,7 @@ import copy
 from read_data import DataSequence, generate_simple_sequeneces
 
 
-class SPAM():
+class CMSPAM():
 
     def __init__(self, min_sup, seq_bitmaps, cmap_i, cmap_s):
         """
@@ -65,7 +65,6 @@ class SPAM():
             if new_node_bitmap is not None:
                 new_sequence = node[0] + [i]
                 new_frequent_patterns_s.append((new_sequence, new_node_bitmap))
-                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
                 if self.is_extension_in_cmap_s(node[0], i[0]):
                     s_temp.append(i)
                 if self.is_extension_in_cmap_i(node[0], i[0]):
@@ -79,7 +78,6 @@ class SPAM():
             if new_node_bitmap is not None:
                 new_sequence = self.i_extend(node[0], i[0])
                 new_frequent_patterns_i.append((new_sequence, new_node_bitmap))
-                self.seq_bitmaps.append((new_sequence, new_node_bitmap))
                 if self.is_extension_in_cmap_i(node[0], i[0]):
                     i_temp.append(i)
 
@@ -139,7 +137,7 @@ class SPAM():
 
         if self.is_extension_in_cmap_i(node[0], i[0]) is False:
             return None
-        node_bitmap = self.get_bitmap(node[0])
+        node_bitmap = node[1]
         i_bitmap = self.get_bitmap([i])
         return self.check_if_frequent(node_bitmap, i_bitmap)
 
@@ -266,7 +264,7 @@ if __name__ == "__main__":
     cmap_i = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_i()
     cmap_s = CMAP(seq_list, min_sup*len(seq_list)).build_cmap_s()
 
-    spam_alg = SPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
+    spam_alg = CMSPAM(min_sup, bitmaps_for_words_ids, cmap_i, cmap_s)
     frequent_patterns = spam_alg.spam()
 
     with open("frequent_patterns", 'w') as file: 

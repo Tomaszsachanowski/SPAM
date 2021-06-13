@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from read_data import generate_simple_sequeneces, generate_test_sequeneces
 from bitmap import generate_words_bitmaps
-from spam import SPAM
+from spam import CMSPAM
 import timeit
 
 
@@ -18,7 +18,7 @@ def measure_spam(number_of_items, number_of_sequences,
             number_of_items, number_of_sequences, number_of_customers,
             min_items_in_transaction, max_items_in_transaction)
         bitmaps_for_words_ids = generate_words_bitmaps(sequences)
-        spam_alg = SPAM(min_sup, bitmaps_for_words_ids)
+        spam_alg = CMSPAM(min_sup, bitmaps_for_words_ids)
 
         # start = time.time()
         # spam_alg.spam()

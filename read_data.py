@@ -132,11 +132,11 @@ import random
 def generate_simple_sequeneces():
     sequences = []
     # Liczba utoworzonych sekwencji
-    max_sequences = 10
+    max_sequences = 4
     # Zbiór elementów jakie mogą wystąpić
-    group_of_texts = ['a', 'b', 'c', 'd', 'e', 'f']
+    group_of_texts = ['a', 'b']
     # Kraje jakie mogą wystąpić
-    group_of_customers = ["Poland", "USA", "France", "Germany"]
+    group_of_customers = ["Poland", "USA"]
     for i in range(max_sequences):
         customer =  random.choice(group_of_customers)
         # losuje jak długa będzie sekwencja

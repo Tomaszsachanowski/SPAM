@@ -4,7 +4,7 @@ import click
 
 from read_data import DataSequence
 from bitmap import generate_words_bitmaps
-from spam import SPAM, translate_patterns
+from spam import CMSPAM, translate_patterns
 from config import Config
 from tweet_api import TweetApi
 import cmap
@@ -17,7 +17,7 @@ TWEET = Config.TWEET
 @click.group()
 def spam_cli():
     """
-        Command Line Interpreter for SPAM algoritm
+        Command Line Interpreter for CMSPAM algoritm
 
         cli_spam start minsup <int> data_path <str>
         cli_spam get_tweets search_word <str> items <int>
@@ -38,7 +38,7 @@ def start(minsup, data_path):
     seq_list = cmap.transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
     cmap_i = cmap.CMAP(seq_list, minsup*len(seq_list)).build_cmap_i()
     cmap_s = cmap.CMAP(seq_list, minsup*len(seq_list)).build_cmap_s()
-    spam_alg = SPAM(minsup, bitmaps_for_words_ids, cmap_i, cmap_s)
+    spam_alg = CMSPAM(minsup, bitmaps_for_words_ids, cmap_i, cmap_s)
     frequent_patterns = spam_alg.spam()
 
     with open("frequent_patterns", 'w') as file: 
@@ -61,7 +61,7 @@ def get_tweets(minsup, search_word, items):
     seq_list = cmap.transform_sequences_into_lists(sequences, len(sequences[0].get_cids()))
     cmap_i = cmap.CMAP(seq_list, minsup*len(seq_list)).build_cmap_i()
     cmap_s = cmap.CMAP(seq_list, minsup*len(seq_list)).build_cmap_s()
-    spam_alg = SPAM(minsup, bitmaps_for_words_ids, cmap_i, cmap_s)
+    spam_alg = CMSPAM(minsup, bitmaps_for_words_ids, cmap_i, cmap_s)
     frequent_patterns = spam_alg.spam()
 
     with open("frequent_patterns_tt", 'w') as file: 
